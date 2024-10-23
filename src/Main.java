@@ -15,10 +15,9 @@ public class Main extends JFrame implements ActionListener {
         display = new JTextField("0");
         display.setEditable(false);
         display.setHorizontalAlignment(JTextField.RIGHT);
-        display.setFont(new Font("Arial", Font.BOLD, 48)); // 글자 크기 키우기
-        display.setBackground(Color.GREEN); // 연두색 배경
+        display.setFont(new Font("Arial", Font.BOLD, 48));
         display.setForeground(Color.BLACK);
-        display.setPreferredSize(new Dimension(400, 100)); // 텍스트 필드 크기 설정
+        display.setPreferredSize(new Dimension(400, 100));
 
 
         JButton[] numberButtons = new JButton[10];
@@ -74,12 +73,12 @@ public class Main extends JFrame implements ActionListener {
 
 
         button.addMouseListener(new MouseAdapter() {
-            @Override
+
             public void mousePressed(MouseEvent e) {
                 button.setBorder(BorderFactory.createLoweredBevelBorder());
             }
 
-            @Override
+
             public void mouseReleased(MouseEvent e) {
                 button.setBorder(BorderFactory.createRaisedBevelBorder());
             }
@@ -88,7 +87,7 @@ public class Main extends JFrame implements ActionListener {
         return button;
     }
 
-    @Override
+
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
