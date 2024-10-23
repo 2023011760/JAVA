@@ -16,6 +16,8 @@ public class Main extends JFrame implements ActionListener {
         setLayout(new BorderLayout());
 
 
+
+
         display = new JTextField();
         display.setEditable(false);
         display.setBackground(Color.GREEN);
