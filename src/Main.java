@@ -88,7 +88,7 @@ public class Main extends JFrame implements ActionListener {
         return button;
     }
 
-    @Override
+
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
