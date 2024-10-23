@@ -5,88 +5,105 @@ import java.awt.event.ActionListener;
 
 public class Main extends JFrame implements ActionListener {
     private JTextField display;
-    private StringBuilder currentInput;
-    private double firstNumber;
     private String operator;
+    private double num1, num2, result;
 
     public Main() {
-        setTitle("계산기");
-        setSize(300, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-
-
-
-
-        display = new JTextField();
+        display = new JTextField("0");
         display.setEditable(false);
-        display.setBackground(Color.GREEN);
-        display.setFont(new Font("Arial", Font.BOLD, 24));
-        add(display, BorderLayout.NORTH);
+        display.setHorizontalAlignment(JTextField.RIGHT);
 
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 4));
-
-        String[] buttons = {
-                "7", "8", "9", "/",
-                "4", "5", "6", "*",
-                "1", "2", "3", "-",
-                "0", ".", "=", "+"
-        };
-
-        for (String text : buttons) {
-            JButton button = new JButton(text);
-            button.addActionListener(this);
-            panel.add(button);
+        // 버튼 생성
+        JButton[] numberButtons = new JButton[10];
+        for (int i = 0; i < 10; i++) {
+            numberButtons[i] = new JButton(String.valueOf(i));
+            numberButtons[i].addActionListener(this);
         }
 
-        add(panel, BorderLayout.CENTER);
-        currentInput = new StringBuilder();
+        JButton addButton = new JButton("+");
+        JButton subButton = new JButton("-");
+        JButton mulButton = new JButton("×");
+        JButton divButton = new JButton("÷");
+        JButton equalsButton = new JButton("=");
+        JButton clearButton = new JButton("AC");
+
+        addButton.addActionListener(this);
+        subButton.addActionListener(this);
+        mulButton.addActionListener(this);
+        divButton.addActionListener(this);
+        equalsButton.addActionListener(this);
+        clearButton.addActionListener(this);
+
+        // 레이아웃 설정
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(5, 4, 10, 10));
+
+        panel.add(clearButton);
+        panel.add(new JButton("CE")); // CE 버튼
+        panel.add(new JButton("%")); // % 버튼
+        panel.add(divButton);
+
+        for (int i = 7; i <= 9; i++) panel.add(numberButtons[i]);
+        panel.add(mulButton);
+
+        for (int i = 4; i <= 6; i++) panel.add(numberButtons[i]);
+        panel.add(subButton);
+
+        for (int i = 1; i <= 3; i++) panel.add(numberButtons[i]);
+        panel.add(addButton);
+
+        panel.add(numberButtons[0]);
+        panel.add(new JButton(".")); // . 버튼
+        panel.add(equalsButton);
+
+        // 프레임 설정
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(400, 500);
+        this.setLayout(new BorderLayout());
+        this.add(display, BorderLayout.NORTH);
+        this.add(panel);
+        this.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
-        if (command.charAt(0) >= '0' && command.charAt(0) <= '9' || command.equals(".")) {
-            currentInput.append(command);
-            display.setText(currentInput.toString());
+        if (command.charAt(0) >= '0' && command.charAt(0) <= '9') {
+            if (display.getText().equals("0")) {
+                display.setText(command);
+            } else {
+                display.setText(display.getText() + command);
+            }
+        } else if (command.equals("AC")) {
+            display.setText("0");
+            num1 = num2 = result = 0;
+            operator = "";
+        } else if (command.equals("+") || command.equals("-") || command.equals("×") || command.equals("÷")) {
+            num1 = Double.parseDouble(display.getText());
+            operator = command;
+            display.setText("0");
         } else if (command.equals("=")) {
-            if (currentInput.length() > 0) {
-                double secondNumber = Double.parseDouble(currentInput.toString());
-                double result = calculate(firstNumber, secondNumber, operator);
-                display.setText(String.valueOf(result));
-                currentInput.setLength(0);
+            num2 = Double.parseDouble(display.getText());
+            switch (operator) {
+                case "+":
+                    result = num1 + num2;
+                    break;
+                case "-":
+                    result = num1 - num2;
+                    break;
+                case "×":
+                    result = num1 * num2;
+                    break;
+                case "÷":
+                    result = num1 / num2;
+                    break;
             }
-        } else {
-            if (currentInput.length() > 0) {
-                firstNumber = Double.parseDouble(currentInput.toString());
-                operator = command;
-                currentInput.setLength(0);
-            }
-        }
-    }
-
-    private double calculate(double num1, double num2, String operator) {
-        switch (operator) {
-            case "+":
-                return num1 + num2;
-            case "-":
-                return num1 - num2;
-            case "*":
-                return num1 * num2;
-            case "/":
-                return num1 / num2;
-            default:
-                return 0;
+            display.setText(String.valueOf(result));
         }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Main calculator = new Main();
-            calculator.setVisible(true);
-        });
+        new Main();
     }
 }
