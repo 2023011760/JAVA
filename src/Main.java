@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Main extends JFrame implements ActionListener {
     private JTextField display;
@@ -9,38 +11,36 @@ public class Main extends JFrame implements ActionListener {
     private double num1, num2, result;
 
     public Main() {
+
         display = new JTextField("0");
         display.setEditable(false);
         display.setHorizontalAlignment(JTextField.RIGHT);
+        display.setFont(new Font("Arial", Font.BOLD, 48)); // 글자 크기 키우기
+        display.setBackground(Color.GREEN); // 연두색 배경
+        display.setForeground(Color.BLACK);
+        display.setPreferredSize(new Dimension(400, 100)); // 텍스트 필드 크기 설정
 
-        // 버튼 생성
+
         JButton[] numberButtons = new JButton[10];
         for (int i = 0; i < 10; i++) {
-            numberButtons[i] = new JButton(String.valueOf(i));
+            numberButtons[i] = createButton(String.valueOf(i));
             numberButtons[i].addActionListener(this);
         }
 
-        JButton addButton = new JButton("+");
-        JButton subButton = new JButton("-");
-        JButton mulButton = new JButton("×");
-        JButton divButton = new JButton("÷");
-        JButton equalsButton = new JButton("=");
-        JButton clearButton = new JButton("AC");
+        JButton addButton = createButton("+");
+        JButton subButton = createButton("-");
+        JButton mulButton = createButton("×");
+        JButton divButton = createButton("÷");
+        JButton equalsButton = createButton("=");
+        JButton clearButton = createButton("AC");
 
-        addButton.addActionListener(this);
-        subButton.addActionListener(this);
-        mulButton.addActionListener(this);
-        divButton.addActionListener(this);
-        equalsButton.addActionListener(this);
-        clearButton.addActionListener(this);
 
-        // 레이아웃 설정
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5, 4, 10, 10));
 
         panel.add(clearButton);
-        panel.add(new JButton("CE")); // CE 버튼
-        panel.add(new JButton("%")); // % 버튼
+        panel.add(new JButton("CE"));
+        panel.add(new JButton("%"));
         panel.add(divButton);
 
         for (int i = 7; i <= 9; i++) panel.add(numberButtons[i]);
@@ -53,16 +53,39 @@ public class Main extends JFrame implements ActionListener {
         panel.add(addButton);
 
         panel.add(numberButtons[0]);
-        panel.add(new JButton(".")); // . 버튼
+        panel.add(new JButton("."));
         panel.add(equalsButton);
 
-        // 프레임 설정
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 500);
         this.setLayout(new BorderLayout());
         this.add(display, BorderLayout.NORTH);
         this.add(panel);
+        this.getContentPane().setBackground(Color.BLACK);
         this.setVisible(true);
+    }
+
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 24));
+        button.setBorder(BorderFactory.createRaisedBevelBorder());
+
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                button.setBorder(BorderFactory.createLoweredBevelBorder());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button.setBorder(BorderFactory.createRaisedBevelBorder());
+            }
+        });
+
+        return button;
     }
 
     @Override
