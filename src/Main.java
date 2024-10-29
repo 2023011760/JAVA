@@ -11,14 +11,12 @@ public class Main extends JFrame implements ActionListener {
     private double num1, num2, result;
 
     public Main() {
-
         display = new JTextField("0");
         display.setEditable(false);
         display.setHorizontalAlignment(JTextField.RIGHT);
         display.setFont(new Font("Arial", Font.BOLD, 48));
         display.setForeground(Color.BLACK);
         display.setPreferredSize(new Dimension(400, 100));
-
 
         JButton[] numberButtons = new JButton[10];
         for (int i = 0; i < 10; i++) {
@@ -32,14 +30,16 @@ public class Main extends JFrame implements ActionListener {
         JButton divButton = createButton("÷");
         JButton equalsButton = createButton("=");
         JButton clearButton = createButton("AC");
-
+        JButton ceButton = createButton("CE");
+        JButton percentButton = createButton("%");
+        JButton decimalButton = createButton(".");
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5, 4, 10, 10));
 
         panel.add(clearButton);
-        panel.add(new JButton("CE"));
-        panel.add(new JButton("%"));
+        panel.add(ceButton);
+        panel.add(percentButton);
         panel.add(divButton);
 
         for (int i = 7; i <= 9; i++) panel.add(numberButtons[i]);
@@ -52,9 +52,8 @@ public class Main extends JFrame implements ActionListener {
         panel.add(addButton);
 
         panel.add(numberButtons[0]);
-        panel.add(new JButton("."));
+        panel.add(decimalButton);
         panel.add(equalsButton);
-
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 500);
@@ -71,13 +70,10 @@ public class Main extends JFrame implements ActionListener {
         button.setFont(new Font("Arial", Font.BOLD, 24));
         button.setBorder(BorderFactory.createRaisedBevelBorder());
 
-
         button.addMouseListener(new MouseAdapter() {
-
             public void mousePressed(MouseEvent e) {
                 button.setBorder(BorderFactory.createLoweredBevelBorder());
             }
-
 
             public void mouseReleased(MouseEvent e) {
                 button.setBorder(BorderFactory.createRaisedBevelBorder());
@@ -86,7 +82,6 @@ public class Main extends JFrame implements ActionListener {
 
         return button;
     }
-
 
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
@@ -101,6 +96,17 @@ public class Main extends JFrame implements ActionListener {
             display.setText("0");
             num1 = num2 = result = 0;
             operator = "";
+        } else if (command.equals("CE")) {
+            display.setText("0");
+        } else if (command.equals("%")) {
+            num1 = Double.parseDouble(display.getText());
+            result = num1 / 100;
+            display.setText(String.valueOf(result));
+            operator = "";
+        } else if (command.equals(".")) {
+            if (!display.getText().contains(".")) {
+                display.setText(display.getText() + ".");
+            }
         } else if (command.equals("+") || command.equals("-") || command.equals("×") || command.equals("÷")) {
             num1 = Double.parseDouble(display.getText());
             operator = command;
