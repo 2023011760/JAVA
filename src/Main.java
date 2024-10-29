@@ -7,8 +7,9 @@ import java.awt.event.MouseEvent;
 
 public class Main extends JFrame implements ActionListener {
     private JTextField display;
-    private String operator;
-    private double num1, num2, result;
+    private String operator = "";
+    private double num1 = 0, num2 = 0;
+    private boolean isNewOperation = true;  
 
     public Main() {
         display = new JTextField("0");
@@ -87,15 +88,17 @@ public class Main extends JFrame implements ActionListener {
         String command = e.getActionCommand();
 
         if (command.charAt(0) >= '0' && command.charAt(0) <= '9') {
-            if (display.getText().equals("0")) {
+            if (isNewOperation) {
                 display.setText(command);
+                isNewOperation = false;
             } else {
                 display.setText(display.getText() + command);
             }
         } else if (command.equals("AC")) {
             display.setText("0");
-            num1 = num2 = result = 0;
+            num1 = num2 = 0;
             operator = "";
+            isNewOperation = true;
         } else if (command.equals("CE")) {
             String currentText = display.getText();
             if (currentText.length() > 1) {
@@ -104,13 +107,19 @@ public class Main extends JFrame implements ActionListener {
                 display.setText("0");
             }
         } else if (command.equals("%")) {
-            num1 = Double.parseDouble(display.getText());
-            result = num1 / 100;
-            display.setText(String.valueOf(result));
-            operator = "";
+            double value = Double.parseDouble(display.getText()) / 100;
+            display.setText(String.valueOf(value));
+            isNewOperation = true;
         } else if (command.equals(".")) {
             if (!display.getText().contains(".")) {
                 display.setText(display.getText() + ".");
+            }
+        } else if (command.equals("=")) {
+            if (!operator.isEmpty()) {
+                num2 = Double.parseDouble(display.getText());
+                calculate();
+                operator = "";
+                isNewOperation = true;
             }
         } else {
             if (!operator.isEmpty()) {
@@ -120,17 +129,12 @@ public class Main extends JFrame implements ActionListener {
                 num1 = Double.parseDouble(display.getText());
             }
             operator = command;
-            display.setText("0");
-        }
-
-        if (command.equals("=")) {
-            num2 = Double.parseDouble(display.getText());
-            calculate();
-            operator = "";
+            isNewOperation = true;
         }
     }
 
     private void calculate() {
+        double result = 0;
         switch (operator) {
             case "+":
                 result = num1 + num2;
@@ -146,15 +150,17 @@ public class Main extends JFrame implements ActionListener {
                     result = num1 / num2;
                 } else {
                     display.setText("Error");
+                    isNewOperation = true;
                     return;
                 }
                 break;
         }
         display.setText(String.valueOf(result));
         num1 = result;
+        num2 = 0;
     }
 
     public static void main(String[] args) {
-        new Main();
+        SwingUtilities.invokeLater(() -> new Main());
     }
 }
