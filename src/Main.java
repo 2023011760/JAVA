@@ -9,7 +9,6 @@ public class Main extends JFrame implements ActionListener {
     private JTextField display;
     private String operator;
     private double num1, num2, result;
-    private boolean isNewCalculation = true; // 새로운 계산을 위한 플래그
 
     public Main() {
         display = new JTextField("0");
@@ -88,9 +87,8 @@ public class Main extends JFrame implements ActionListener {
         String command = e.getActionCommand();
 
         if (command.charAt(0) >= '0' && command.charAt(0) <= '9') {
-            if (isNewCalculation) {
+            if (display.getText().equals("0")) {
                 display.setText(command);
-                isNewCalculation = false;
             } else {
                 display.setText(display.getText() + command);
             }
@@ -98,21 +96,23 @@ public class Main extends JFrame implements ActionListener {
             display.setText("0");
             num1 = num2 = result = 0;
             operator = "";
-            isNewCalculation = true;
         } else if (command.equals("CE")) {
-
-            display.setText(String.valueOf(num1));
+            String currentText = display.getText();
+            if (currentText.length() > 1) {
+                display.setText(currentText.substring(0, currentText.length() - 1));
+            } else {
+                display.setText("0");
+            }
         } else if (command.equals("%")) {
             num1 = Double.parseDouble(display.getText());
             result = num1 / 100;
             display.setText(String.valueOf(result));
             operator = "";
-            isNewCalculation = true; // 새로운 계산을 시작
         } else if (command.equals(".")) {
             if (!display.getText().contains(".")) {
                 display.setText(display.getText() + ".");
             }
-        } else if (command.equals("+") || command.equals("-") || command.equals("×") || command.equals("÷")) {
+        } else {
             if (!operator.isEmpty()) {
                 num2 = Double.parseDouble(display.getText());
                 calculate();
@@ -121,12 +121,12 @@ public class Main extends JFrame implements ActionListener {
             }
             operator = command;
             display.setText("0");
-            isNewCalculation = true; // 새로운 숫자를 입력할 준비
-        } else if (command.equals("=")) {
+        }
+
+        if (command.equals("=")) {
             num2 = Double.parseDouble(display.getText());
             calculate();
             operator = "";
-            isNewCalculation = true;
         }
     }
 
@@ -142,7 +142,12 @@ public class Main extends JFrame implements ActionListener {
                 result = num1 * num2;
                 break;
             case "÷":
-                result = num1 / num2;
+                if (num2 != 0) {
+                    result = num1 / num2;
+                } else {
+                    display.setText("Error");
+                    return;
+                }
                 break;
         }
         display.setText(String.valueOf(result));
